@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Exam - Online Exam Pro</title>
+    <div th:replace="~{fragments :: header_links}"></div>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <div class="container mt-5 pt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="glass-card p-5 animate__animated animate__fadeIn">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-white">Create New Exam</h2>
+                        <p class="text-secondary small">Set up your exam parameters</p>
+                    </div>
+
+                    <form th:action="@{/examiner/exam/add}" th:object="${exam}" method="post">
+                        <div class="mb-4">
+                            <label for="title" class="form-label text-secondary small">Exam Title</label>
+                            <input type="text" th:field="*{title}" class="form-control" id="title"
+                                placeholder="e.g. Java Fundamentals Quiz" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="durationInMinutes" class="form-label text-secondary small">Duration
+                                (Minutes)</label>
+                            <div class="input-group">
+                                <input type="number" th:field="*{durationInMinutes}" class="form-control"
+                                    id="durationInMinutes" placeholder="e.g. 60" required>
+                                <span
+                                    class="input-group-text bg-transparent border-secondary-subtle text-secondary small">Minutes</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="submit" class="btn btn-premium w-100 py-3">Create Exam & Proceed</button>
+                            <a th:href="@{/examiner/exams}"
+                                class="btn btn-outline-light py-3 border-secondary-subtle small"
+                                style="border-radius: 30px;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center mt-auto">
+        <div class="container text-center">
+            <p class="mb-0 text-secondary small">© 2025 Online Exam Pro. Excellence in Evaluation.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

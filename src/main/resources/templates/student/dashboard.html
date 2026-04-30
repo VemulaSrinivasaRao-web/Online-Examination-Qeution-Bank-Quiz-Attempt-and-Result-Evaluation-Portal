@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <title>Student Dashboard - Online Exam Pro</title>
+  <div th:replace="~{fragments :: header_links}"></div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <div class="container mt-5 pt-5">
+    <!-- Welcome Header -->
+    <div class="d-flex align-items-center mb-5 animate__animated animate__fadeIn">
+      <div class="position-relative me-4">
+        <img th:if="${student.profilePicUrl != null}" th:src="@{${student.profilePicUrl}}" alt="Profile"
+          class="rounded-circle border border-3 border-info" style="width: 80px; height: 80px; object-fit: cover;">
+        <div th:if="${student.profilePicUrl == null}"
+          class="rounded-circle bg-info d-flex align-items-center justify-content-center text-white border border-3 border-info"
+          style="width: 80px; height: 80px;">
+          <i class="bi bi-person-fill fs-1"></i>
+        </div>
+        <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2"></span>
+      </div>
+      <div>
+        <h1 class="display-6 fw-bold text-white mb-0">Welcome, <span th:text="${student.fullName}"
+            class="text-info">Student</span>!</h1>
+        <p class="text-secondary mb-0">Track your performance and attempt new examinations.</p>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+      <div class="col-md-4">
+        <div class="glass-card p-4 text-center bg-premium-1">
+          <div class="fs-1 fw-bold text-white mb-1" th:text="${totalTaken}">0</div>
+          <div class="text-white-50 small text-uppercase fw-bold">Exams Taken</div>
+          <i class="bi bi-journal-check fs-1 position-absolute end-0 bottom-0 opacity-25 me-3 mb-2"></i>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4 text-center bg-premium-2">
+          <div class="fs-1 fw-bold text-white mb-1" th:text="${#numbers.formatDecimal(averageScore, 1, 1) + '%'}">0.0%
+          </div>
+          <div class="text-white-50 small text-uppercase fw-bold">Average Score</div>
+          <i class="bi bi-graph-up-arrow fs-1 position-absolute end-0 bottom-0 opacity-25 me-3 mb-2"></i>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4 text-center bg-premium-4">
+          <div class="fs-1 fw-bold text-white mb-1" th:text="${highestScore} + '%'">0%</div>
+          <div class="text-white-50 small text-uppercase fw-bold">Highest Score</div>
+          <i class="bi bi-trophy fs-1 position-absolute end-0 bottom-0 opacity-25 me-3 mb-2"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="row mb-5 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+      <div class="col-12">
+        <div class="glass-card p-4">
+          <h5 class="fw-bold text-white mb-4"><i class="bi bi-activity text-info me-2"></i>Score History (%)</h5>
+          <div style="height: 300px;">
+            <canvas id="scoreChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Area: Available Exams and Past Results -->
+    <div class="row g-4 mb-5 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+      <!-- Available Exams -->
+      <div class="col-lg-5">
+        <div class="glass-card h-100 overflow-hidden">
+          <div class="p-4 border-bottom border-white-10">
+            <h5 class="fw-bold text-white mb-0"><i class="bi bi-pencil-square text-primary me-2"></i>Available Exams
+            </h5>
+          </div>
+          <div class="list-group list-group-flush bg-transparent">
+            <div th:if="${#lists.isEmpty(availableExams)}" class="p-5 text-center text-secondary">
+              <i class="bi bi-emoji-smile fs-1 mb-2 d-block"></i>
+              No new exams available right now.
+            </div>
+            <div th:each="exam : ${availableExams}"
+              class="list-group-item bg-transparent border-white-10 p-4 d-flex justify-content-between align-items-center hover-effect">
+              <div>
+                <h6 class="text-white fw-bold mb-1" th:text="${exam.title}">Exam Title</h6>
+                <small class="text-secondary"
+                  th:text="|${exam.durationInMinutes} mins • ${#lists.size(exam.questions)} questions|">60 mins</small>
+              </div>
+              <a th:href="@{/exam/{id}(id=${exam.id})}" class="btn btn-premium btn-sm">Start Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Past Results -->
+      <div class="col-lg-7">
+        <div class="glass-card h-100 overflow-hidden">
+          <div class="p-4 border-bottom border-white-10">
+            <h5 class="fw-bold text-white mb-0"><i class="bi bi-check-circle-fill text-success me-2"></i>Past Results
+            </h5>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover table-dark bg-transparent mb-0">
+              <thead class="text-secondary small text-uppercase">
+                <tr>
+                  <th class="ps-4">Exam</th>
+                  <th>Score</th>
+                  <th>Result</th>
+                  <th class="pe-4">Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-white align-middle">
+                <tr th:if="${#lists.isEmpty(pastResults)}">
+                  <td colspan="4" class="text-center py-5 text-secondary">No completed exams yet.</td>
+                </tr>
+                <tr th:each="result : ${pastResults}" class="border-white-10">
+                  <td class="ps-4">
+                    <div class="fw-bold" th:text="${result.exam.title}">Exam Title</div>
+                    <small class="text-secondary"
+                      th:text="${#temporals.format(result.submissionTime, 'MMM dd, yyyy')}"></small>
+                  </td>
+                  <td>
+                    <span th:text="${result.scoreAchieved}">0</span> / <span th:text="${result.totalMarks}">0</span>
+                  </td>
+                  <td>
+                    <span class="badge"
+                      th:classappend="${((result.scoreAchieved * 100.0) / result.totalMarks) >= 70 ? 'bg-success' : 'bg-danger'}"
+                      th:text="${#numbers.formatDecimal((result.scoreAchieved * 100.0) / result.totalMarks, 1, 1) + '%'}">0%</span>
+                  </td>
+                  <td class="pe-4">
+                    <a th:href="@{/student/review/{id}(id=${result.id})}"
+                      class="btn btn-sm btn-outline-info rounded-pill px-3">Review</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center mt-auto">
+    <div class="container text-center">
+      <p class="mb-0 text-secondary small">© 2025 Online Exam Pro. Excellence in Progress.</p>
+    </div>
+  </footer>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const chartLabels = /*[[${chartLabels}]]*/[];
+    const chartData = /*[[${chartData}]]*/[];
+
+    if (chartLabels.length > 0) {
+      const ctx = document.getElementById('scoreChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: 'Score (%)',
+            data: chartData,
+            borderColor: '#00c6ff',
+            backgroundColor: 'rgba(0, 198, 255, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3,
+            pointBackgroundColor: '#fff',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: 'rgba(255, 255, 255, 0.1)' },
+              ticks: { color: 'rgba(255, 255, 255, 0.7)', callback: v => v + '%' }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+            }
+          }
+        }
+      });
+    }
+    /*]]>*/
+  </script>
+
+  <style>
+    .border-white-10 {
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .hover-effect:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+      transform: translateX(5px);
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

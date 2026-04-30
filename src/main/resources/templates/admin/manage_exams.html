@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Manage Exams - Online Exam Pro</title>
+  <div th:replace="~{fragments :: header_links}"></div>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <div th:replace="~{fragments :: navbar}"></div>
+
+  <div class="container mt-5 pt-5">
+    <div class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeIn">
+      <div>
+        <h2 class="fw-bold text-white mb-0">Master Exam Control</h2>
+        <p class="text-secondary mb-0 small">Overview of all examinations across the platform.</p>
+      </div>
+      <a th:href="@{/admin/exam/add}" class="btn btn-premium"><i class="bi bi-plus-lg me-2"></i>Create Exam</a>
+    </div>
+
+    <!-- Stats summary for this page -->
+    <div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+      <div class="col-md-4">
+        <div class="glass-card p-3 d-flex align-items-center bg-white-5">
+          <div class="rounded-3 bg-info p-3 me-3"><i class="bi bi-journals fs-4 text-white"></i></div>
+          <div>
+            <div class="text-white-50 small">Total Exams</div>
+            <div class="h4 fw-bold text-white mb-0" th:text="${exams.size()}">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+      <div class="table-responsive">
+        <table class="table table-hover table-dark bg-transparent mb-0">
+          <thead>
+            <tr class="text-secondary small text-uppercase fw-bold border-white-10">
+              <th class="ps-4">Title</th>
+              <th>Duration</th>
+              <th>Questions</th>
+              <th class="pe-4 text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-white align-middle">
+            <tr th:if="${#lists.isEmpty(exams)}">
+              <td colspan="4" class="text-center py-5 text-secondary">No exams found in the system.</td>
+            </tr>
+            <tr th:each="exam : ${exams}" class="border-white-10 hover-effect">
+              <td class="ps-4">
+                <div class="fw-bold fs-5 text-info" th:text="${exam.title}">Exam Title</div>
+                <div class="text-secondary small" th:text="'ID: ' + ${exam.id}">ID: 1</div>
+              </td>
+              <td>
+                <span class="badge bg-premium-4 px-3 py-2" th:text="${exam.durationInMinutes + ' MIN'}">60 MIN</span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="h5 fw-bold mb-0 me-2"
+                    th:text="${exam.questions != null ? exam.questions.size() : 0}">0</span>
+                  <span class="text-secondary small">Items</span>
+                </div>
+              </td>
+              <td class="pe-4 text-end">
+                <div class="btn-group">
+                  <a th:href="@{'/admin/exam/manage-questions/' + ${exam.id}}"
+                    class="btn btn-sm btn-outline-info rounded-pill px-3 me-2">
+                    <i class="bi bi-list-check me-1"></i>Questions
+                  </a>
+                  <a th:href="@{'/admin/exam/edit/' + ${exam.id}}"
+                    class="btn btn-sm btn-outline-warning rounded-pill px-3 me-2">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                  </a>
+                  <a th:href="@{'/admin/exam/delete/' + ${exam.id}}"
+                    class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                    onclick="return confirm('Archive this exam?')">
+                    <i class="bi bi-trash me-1"></i>Archive
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center mt-auto">
+    <div class="container text-center">
+      <p class="mb-0 text-secondary small">© 2025 Online Exam Pro. Excellence in Governance.</p>
+    </div>
+  </footer>
+
+  <style>
+    .border-white-10 {
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .bg-white-5 {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .hover-effect:hover {
+      background: rgba(255, 255, 255, 0.03) !important;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
