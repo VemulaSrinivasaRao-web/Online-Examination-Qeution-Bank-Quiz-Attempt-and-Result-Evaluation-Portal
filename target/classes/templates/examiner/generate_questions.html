@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>AI Question Generator - Online Exam Pro</title>
+    <div th:replace="~{fragments :: header_links}"></div>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <div class="container mt-5 pt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="glass-card p-5 animate__animated animate__fadeIn">
+                    <div class="text-center mb-5">
+                        <div class="display-4 text-warning mb-3">
+                            <i class="bi bi-magic"></i>
+                        </div>
+                        <h2 class="fw-bold text-white">AI Question Bank Generator</h2>
+                        <p class="text-secondary">Upload your syllabus (PDF or TXT) and let our engine generate
+                            questions automatically.</p>
+                    </div>
+
+                    <div th:if="${errorMessage}"
+                        class="alert alert-danger bg-danger text-white border-0 mb-4 animate__animated animate__shakeX">
+                        <i class="bi bi-exclamation-octagon-fill me-2"></i> <span th:text="${errorMessage}">Error</span>
+                    </div>
+
+                    <form th:action="@{/examiner/generate-questions}" method="post" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label for="examId" class="form-label text-secondary small text-uppercase fw-bold">Select
+                                Destination Exam</label>
+                            <select name="examId" id="examId"
+                                class="form-select bg-transparent border-secondary-subtle text-white py-3" required>
+                                <option value="" class="bg-dark">-- Choose an Exam --</option>
+                                <option th:each="exam : ${exams}" th:value="${exam.id}" th:text="${exam.title}"
+                                    class="bg-dark">Exam Name</option>
+                            </select>
+                            <div class="form-text text-white-50 small mt-2">The generated questions will be
+                                automatically added to this exam.</div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="numQuestions"
+                                    class="form-label text-secondary small text-uppercase fw-bold">Total
+                                    Questions</label>
+                                <input type="number" name="numQuestions" id="numQuestions"
+                                    class="form-control bg-transparent border-secondary-subtle text-white py-3"
+                                    placeholder="e.g. 10" required min="1" onchange="validateCounts()">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="timeLimit"
+                                    class="form-label text-secondary small text-uppercase fw-bold">Time Limit
+                                    (Mins)</label>
+                                <input type="number" name="timeLimit" id="timeLimit"
+                                    class="form-control bg-transparent border-secondary-subtle text-white py-3"
+                                    placeholder="e.g. 60" required min="1">
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label for="easyCount"
+                                    class="form-label text-secondary small text-uppercase fw-bold">Easy (Set1)</label>
+                                <input type="number" name="easyCount" id="easyCount"
+                                    class="form-control bg-transparent border-secondary-subtle text-white py-3"
+                                    placeholder="0" required min="0" value="0" onchange="validateCounts()">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="mediumCount"
+                                    class="form-label text-secondary small text-uppercase fw-bold">Medium (Set2)</label>
+                                <input type="number" name="mediumCount" id="mediumCount"
+                                    class="form-control bg-transparent border-secondary-subtle text-white py-3"
+                                    placeholder="0" required min="0" value="0" onchange="validateCounts()">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="hardCount"
+                                    class="form-label text-secondary small text-uppercase fw-bold">Hard (Set3)</label>
+                                <input type="number" name="hardCount" id="hardCount"
+                                    class="form-control bg-transparent border-secondary-subtle text-white py-3"
+                                    placeholder="0" required min="0" value="0" onchange="validateCounts()">
+                            </div>
+                        </div>
+                        <div id="count-warning" class="text-danger small mb-3 d-none">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Easy + Medium + Hard must equal Total
+                            Questions.
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="specificTopic" class="form-label text-secondary small text-uppercase fw-bold">Focus Topic / Keywords (Optional)</label>
+                            <input type="text" name="specificTopic" id="specificTopic"
+                                class="form-control bg-transparent border-secondary-subtle text-white py-3"
+                                placeholder="e.g. Chatgpt, Programming Logic, System Design">
+                            <div class="form-text text-white-50 small mt-2">Focus the AI on a particular subject area.</div>
+                        </div>
+
+                        <div class="mb-4 d-flex align-items-center">
+                            <div class="form-check form-switch p-0">
+                                <label class="form-check-label text-white fw-semibold ms-0 me-3" for="useAdvancedAI">Enable ChatGPT-like Generation (Gemini)</label>
+                                <input class="form-check-input ms-0" type="checkbox" name="useAdvancedAI" id="useAdvancedAI" value="true">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label for="syllabusFile"
+                                class="form-label text-secondary small text-uppercase fw-bold">Upload Syllabus
+                                File (Optional if Topic provided)</label>
+                            <div class="upload-zone p-5 text-center border-dashed rounded-4 bg-white-5 hover-effect cursor-pointer"
+                                onclick="document.getElementById('syllabusFile').click()">
+                                <i class="bi bi-cloud-arrow-up display-1 text-info opacity-50 mb-3 d-block"></i>
+                                <span class="text-white d-block mb-1 fw-semibold">Click to browse or drag and
+                                    drop</span>
+                                <span class="text-secondary small">Supports .pdf and .txt files</span>
+                                <input type="file" name="syllabusFile" id="syllabusFile" class="d-none"
+                                    accept=".pdf,.txt" onchange="updateFileName(this)">
+                                <div id="file-name" class="mt-3 text-success fw-bold small"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-premium py-3 fs-5 fw-bold">
+                                <i class="bi bi-cpu-fill me-2"></i> Start AI Generation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center mt-auto">
+        <div class="container text-center">
+            <p class="mb-0 text-secondary small">© 2025 Online Exam Pro. Powered by Advanced AI.</p>
+        </div>
+    </footer>
+
+    <style>
+        .upload-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            border-color: #00c6ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .bg-white-5 {
+            background: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+
+    <script>
+        function updateFileName(input) {
+            const fileNameDiv = document.getElementById('file-name');
+            if (input.files && input.files.length > 0) {
+                fileNameDiv.innerHTML = '<i class="bi bi-file-earmark-check-fill me-1"></i> Selected: ' + input.files[0].name;
+            }
+        }
+
+        function validateCounts() {
+            const total = parseInt(document.getElementById('numQuestions').value) || 0;
+            const easy = parseInt(document.getElementById('easyCount').value) || 0;
+            const medium = parseInt(document.getElementById('mediumCount').value) || 0;
+            const hard = parseInt(document.getElementById('hardCount').value) || 0;
+            const warning = document.getElementById('count-warning');
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            if (total > 0 && (easy + medium + hard) !== total) {
+                warning.classList.remove('d-none');
+                submitBtn.disabled = true;
+            } else {
+                warning.classList.add('d-none');
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

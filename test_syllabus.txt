@@ -1,0 +1,10 @@
+Computer Science is the study of computers and computational systems.
+Algorithms are a set of rules to be followed in calculations.
+Data Structures is a specialized format for organizing and storing data.
+Artificial Intelligence is the simulation of human intelligence processes by machines.
+Machine Learning is a branch of AI and computer science which focuses on the use of data and algorithms to imitate the way that humans learn.
+Neural Networks are a series of algorithms that endeavor to recognize underlying relationships in a set of data.
+Deep Learning is a subset of machine learning.
+Software Engineering is the systematic application of engineering approaches to the development of software.
+Database Management Systems are software systems used to manage databases.
+Cloud Computing is the on-demand availability of computer system resources.

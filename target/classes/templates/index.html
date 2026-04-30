@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Online Exam Pro - Future of Assessments</title>
+    <div th:replace="~{fragments :: header_links}"></div>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <!-- Hero Section -->
+    <div class="hero-section mt-5">
+        <div class="container">
+            <h1 class="hero-title animate__animated animate__fadeInDown">Empowering <span
+                    class="text-white">Education</span> Through Technology</h1>
+            <p class="lead mb-4 text-secondary fs-4">The ultimate platform for Examiners, Admins, and Students.
+                Seamlessly manage exams, generate questions with AI, and track performance with precision.</p>
+            <div class="mt-4">
+                <a th:href="@{/login}" class="btn btn-premium btn-lg m-2 animate__animated animate__fadeInLeft">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Get Started
+                </a>
+                <a th:href="@{/register}"
+                    class="btn btn-outline-light btn-lg m-2 animate__animated animate__fadeInRight"
+                    style="border-radius: 30px;">
+                    <i class="bi bi-person-plus-fill me-2"></i>Create Account
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container mb-5 py-5">
+        <div class="row g-4">
+            <!-- Student Feature -->
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-mortarboard-fill fs-1 text-info"></i>
+                    </div>
+                    <h3>For Students</h3>
+                    <p class="text-secondary">Take timed exams, get instant AI-powered feedback, and track your learning
+                        journey with interactive charts.</p>
+                </div>
+            </div>
+
+            <!-- Examiner Feature -->
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-magic fs-1 text-warning"></i>
+                    </div>
+                    <h3>For Examiners</h3>
+                    <p class="text-secondary">Revolutionize question creation. Upload a syllabus and let our AI generate
+                        comprehensive question banks automatically.</p>
+                </div>
+            </div>
+
+            <!-- Admin Feature -->
+            <div class="col-md-4">
+                <div class="glass-card h-100 p-4 text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-lock-fill fs-1 text-danger"></i>
+                    </div>
+                    <h3>For Admins</h3>
+                    <p class="text-secondary">Manage the entire ecosystem. Oversight of users, exams, and detailed
+                        analytics to ensure academic integrity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra Info Section -->
+    <div class="container py-5 my-5">
+        <div class="glass-card p-5 overflow-hidden">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">Why Choose Online Exam Pro?</h2>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> AI-Powered Question
+                            Bank Generation</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Real-time Performance
+                            Monitoring</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Secure &
+                            Anti-Cheating Environment</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Beautifully Crafted
+                            Glassmorphism UI</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <i class="bi bi-laptop fs-1 text-info opacity-50" style="font-size: 10rem !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center mt-auto">
+        <div class="container">
+            <p class="mb-0 text-secondary">© 2025 Online Exam Pro. Designed for Excellence. <br> <span
+                    class="text-white-50 small">Developed by Sumit & Enhanced by Antigravity</span></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

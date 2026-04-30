@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Access Denied - Online Exam Pro</title>
+    <div th:replace="~{fragments :: header_links}"></div>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div th:replace="~{fragments :: navbar}"></div>
+
+    <div class="container mt-5 pt-5 flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="text-center animate__animated animate__fadeIn">
+            <div class="glass-card p-5" style="max-width: 550px; margin: auto;">
+                <div class="mb-4">
+                    <i class="bi bi-shield-lock-fill text-danger" style="font-size: 5rem;"></i>
+                </div>
+                <h1 class="fw-bold text-white mb-2" style="font-size: 3rem;">403</h1>
+                <h4 class="fw-semibold text-danger mb-3">Access Denied</h4>
+                <p class="text-secondary mb-4">
+                    You don't have permission to view this page.<br>
+                    Please log in with an account that has the correct role.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a th:href="@{/}" class="btn btn-premium px-4 rounded-pill">
+                        <i class="bi bi-house-fill me-2"></i>Go Home
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-outline-light px-4 rounded-pill">
+                        <i class="bi bi-arrow-left-circle me-2"></i>Go Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center mt-auto">
+        <div class="container">
+            <p class="mb-0 text-secondary small">© 2025 Online Exam Pro. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
